@@ -9,34 +9,40 @@ public class TouchedAction {
 
     private boolean isTurnOn;
 
-    public void execute() {
-        System.out.println("execute");
+    private static TouchedAction action;
 
-        android.hardware.Camera camera = android.hardware.Camera.open();
+    private android.hardware.Camera camera;
+    private Camera.Parameters params;
+
+    public TouchedAction() {
+        camera = android.hardware.Camera.open();
         camera.startPreview();
+        params = camera.getParameters();
+    }
+
+    public static TouchedAction getInstance() {
+        if (action == null) {
+            action = new TouchedAction();
+        }
+        return action;
+    }
+
+    public boolean execute() {
+        System.out.println("execute");
 
         //light on or off
         if (isTurnOn) {
             //to off
-            Camera.Parameters params = camera.getParameters();
-            //フラッシュモードを点灯に設定
             params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-            //パラメータ設定
-            camera.setParameters(params);
+            isTurnOn = false;
         } else {
             //to on
-
-
-            //パラメータ取得
-            Camera.Parameters params = camera.getParameters();
-            //フラッシュモードを点灯に設定
             params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-            //パラメータ設定
-            camera.setParameters(params);
+            isTurnOn = true;
         }
+        camera.setParameters(params);
 
-
-
+        return isTurnOn;
 
     }
 }

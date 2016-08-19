@@ -3,9 +3,15 @@ package knowledge.prime.light;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
+
+import java.util.List;
 
 /**
  * Implementation of App Widget functionality.
@@ -14,8 +20,6 @@ public class LightWidget extends AppWidgetProvider {
 
 
     final String btn1Filter = "knowledge.prime.light.BUTTON1_CLICKED";
-
-    private TouchedAction action;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
@@ -33,6 +37,8 @@ public class LightWidget extends AppWidgetProvider {
 
     }
 
+    private int[] appWidgetIds;
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
@@ -46,7 +52,7 @@ public class LightWidget extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetIds, views);
         }
 
-//        System.out.println("onUpdate");
+        System.out.println("onUpdate");
     }
 
     @Override
@@ -55,28 +61,34 @@ public class LightWidget extends AppWidgetProvider {
 
         String action = intent.getAction();
         if (action.equals(btn1Filter)) {
-            getTouchedAction().execute();
+            boolean isTurnOn = TouchedAction.getInstance().execute();
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.light_widget);
+            if (isTurnOn) {
+                views.setImageViewResource(R.id.imageView, R.drawable.light_on1);
+                System.out.println("light on");
+            } else {
+                views.setImageViewResource(R.id.imageView, R.drawable.light_off1);
+                System.out.println("light off");
+            }
+            AppWidgetManager manager = AppWidgetManager.getInstance(context);
+            ComponentName thisWidget = new ComponentName(context, LightWidget.class);
+
+            manager.updateAppWidget(manager.getAppWidgetIds(thisWidget), views);
         }
-//        System.out.println("onReceive");
+        System.out.println("onReceive");
     }
 
-    public TouchedAction getTouchedAction() {
-        if (action == null) {
-            action = new TouchedAction();
-        }
-        return action;
-    }
 
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
-//        System.out.println("onEnabeld");
+        System.out.println("onEnabeld");
     }
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-//        System.out.println("onDisabled");
+        System.out.println("onDisabled");
     }
 }
 
