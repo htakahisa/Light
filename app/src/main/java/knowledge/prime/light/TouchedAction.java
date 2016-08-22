@@ -40,6 +40,7 @@ public class TouchedAction {
             params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
             isTurnOn = true;
         }
+
         camera.setParameters(params);
 
         return isTurnOn;
