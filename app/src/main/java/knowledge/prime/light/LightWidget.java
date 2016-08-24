@@ -3,15 +3,10 @@ package knowledge.prime.light;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
-
-import java.util.List;
 
 /**
  * Implementation of App Widget functionality.
@@ -52,6 +47,8 @@ public class LightWidget extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetIds, views);
         }
 
+
+
         System.out.println("onUpdate");
     }
 
@@ -61,19 +58,29 @@ public class LightWidget extends AppWidgetProvider {
 
         String action = intent.getAction();
         if (action.equals(btn1Filter)) {
-            boolean isTurnOn = TouchedAction.getInstance().execute();
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.light_widget);
-            if (isTurnOn) {
-                views.setImageViewResource(R.id.imageView, R.drawable.light_on1);
-                System.out.println("light on");
-            } else {
-                views.setImageViewResource(R.id.imageView, R.drawable.light_off1);
-                System.out.println("light off");
-            }
+            TouchedAction touchedAction = TouchedAction.getInstance();
+
+            //画像を先に中間画像に変更
             AppWidgetManager manager = AppWidgetManager.getInstance(context);
             ComponentName thisWidget = new ComponentName(context, LightWidget.class);
 
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.light_widget);
+            views.setImageViewResource(R.id.imageView, R.drawable.light_mid2);
             manager.updateAppWidget(manager.getAppWidgetIds(thisWidget), views);
+
+            boolean isTurnOn = touchedAction.execute();
+            if (isTurnOn) {
+                views.setImageViewResource(R.id.imageView, R.drawable.light_on2);
+                System.out.println("light on");
+            } else {
+                views.setImageViewResource(R.id.imageView, R.drawable.light_off2);
+                System.out.println("light off");
+            }
+
+
+            manager.updateAppWidget(manager.getAppWidgetIds(thisWidget), views);
+
+            TouchedAction.getInstance().reset();
         }
         System.out.println("onReceive");
     }

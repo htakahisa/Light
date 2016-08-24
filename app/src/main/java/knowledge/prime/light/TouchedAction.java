@@ -15,21 +15,40 @@ public class TouchedAction {
     private Camera.Parameters params;
 
     public TouchedAction() {
-        camera = android.hardware.Camera.open();
-        camera.startPreview();
-        params = camera.getParameters();
+
+    }
+
+    public boolean isTournOn() {
+        return isTurnOn;
     }
 
     public static TouchedAction getInstance() {
         if (action == null) {
             action = new TouchedAction();
         }
+
         return action;
+    }
+
+    public void reset() {
+        if (!isTurnOn) {
+            camera.release();
+            camera = null;
+        }
+    }
+
+    private android.hardware.Camera getCamera() {
+        if (camera == null) {
+            camera = android.hardware.Camera.open();
+
+        }
+        camera.startPreview();
+        return camera;
     }
 
     public boolean execute() {
         System.out.println("execute");
-
+        params = getCamera().getParameters();
         //light on or off
         if (isTurnOn) {
             //to off
